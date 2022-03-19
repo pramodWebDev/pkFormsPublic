@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <title> Register | pkForms </title>
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <link rel="stylesheet" href="/userui/assets/css/bootstrap.css" type="text/css" />
+
+    <!--    
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> -->
+
+    <style>
+        .formResponseContainer {
+            padding: 10px;
+        }
+
+        @media only screen and (min-width: 600px) {
+            .formResponseContainer {
+                padding-left: 350px;
+                padding-right: 350px;
+            }
+        }
+    </style>
+    <!-- endbuild -->
+
+</head>
+
+<body>
+    <div class="formResponseContainer">
+
+        <form name="form" class="formResponse">
+
+            <div class="form-group">
+                <label class="form-label">Name</label>
+                <input type="text" class="form-control" placeholder="Enter Name" id="userName">
+                <div class="invalid-feedback" id="name-err">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" class="form-control" id="userEmail" placeholder="Enter Email Id">
+                <div class="invalid-feedback" id="email-err">
+                </div>
+
+            </div>
+            <!-- <div class="form-group">
+                                    <label>Company</label>
+                                      <input type="text" class="" id="userCompany" placeholder="Enter Company Name">
+                                  </div> -->
+            <div class="form-group">
+                <label>Password</label>
+                <input type="password" class="form-control" id="pwd" placeholder="Enter Password">
+                <div class="invalid-feedback" id="pass-err">
+                </div>
+            </div>
+
+            <!-- <div class="mb-3 text-sm">
+                                      <span class="text-muted">By clicking Sign Up, I agree to the</span>
+                                      <a href="#">Terms of service</a>
+                                  </div> -->
+            <div class="">
+                <div class="invalid-feedback" id="cap-err">
+                </div>
+                <button type="button" class=" btn btn-primary btn-register-primary mb-1"
+                    id="submitBtn">Register</button>
+                <div class="mb-3 mt-3">Already have an account?
+                    <a href="/login" target="_blank" class="text-primary _600">Login here</a>
+                </div>
+                <div class="mb-3 mt-3">Or Login with Google
+                    <a href="/google"  class="text-primary _600">Login With Google</a>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
+    <!-- endbuild -->
+    <script src="/userui/libs/jquery/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+
+    <script>
+        $(function () {
+
+
+            function check_email() {
+                var pattern = new RegExp(/^[+a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,10}$/i);
+                // return new RegExp(/^([A-Za-z0-9_\-\.])+\@([A-Za-z0-9_\-\.])+\.([A-Za-z]{2,4})$/);
+                if (pattern.test($("#userEmail").val())) {
+                    $("#email-err").hide();
+                } else {
+                    $("#email-err").html("Enter valid email ID");
+                    $("#email-err").show();
+                    erroremail = true;
+                }
+            }
+
+            function check_name() {
+                var name = $("#userName").val().length;
+                if (name < 2 || name > 30) {
+                    $("#name-err").html("Please enter at least 5 characters");
+                    $("#name-err").show();
+                    errorname = true;
+                } else {
+                    $("#name-err").hide();
+
+                }
+
+            }
+
+
+            function check_password() {
+                var password_length = $("#pwd").val().length;
+                if (password_length < 5) {
+                    $("#pass-err").html("Please Enter At least 5 characters");
+                    $("#pass-err").show();
+                    error_password = true;
+                } else {
+                    $("#pass-err").hide();
+                }
+
+            }
+            $("#userName").keyup(function () {
+                check_name();
+
+
+            });
+
+            $("#userEmail").keyup(function () {
+                check_email();
+
+            });
+
+            $("#pwd").keyup(function () {
+                check_password();
+
+            });
+
+            $("#pwd").keyup(function (event) {
+                if (event.keyCode === 13) {
+                    $("#submitBtn").click();
+                }
+            });
+
+
+            $('#submitBtn').on("click", function (e) {
+                e.preventDefault();
+
+                errorname = false;
+                erroremail = false;
+                error_password = false;
+                error_captcha = false;
+
+                check_email();
+                check_name();
+                // check_company();
+                check_password();
+
+                var name = $('#userName').val();
+                var email = $('#userEmail').val();
+                // var cname = $('#userCompany').val();
+                var password = $('#pwd').val();
+                var dataObj = {}
+
+
+                var dataObj = {
+                    "name": name,
+                    "email": email,
+                    // "company": cname,
+                    "password": password,
+                    // "captcha": capthchakey
+
+
+                };
+                console.log(errorname, "errorname");
+                console.log(erroremail, "erroremail");
+                console.log(error_password, "error_password");
+                console.log(error_captcha, "error_captcha");
+
+
+
+                if (errorname == false && erroremail == false && error_password == false) {
+                    // if (errorname == false && erroremail == false && error_password == false && error_captcha == false) {
+                    runit(dataObj);
+
+                } else {
+                    return false;
+
+                }
+            });
+
+
+            function runit(dataObj) {
+
+
+                console.log(dataObj, "dataObjdataObjdataObj");
+                $.ajax({
+                    type: "POST",
+                    url: "/register",
+                    data: dataObj,
+                    success: function (data) {
+                        window.location.href = '/home';
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+
+                        console.log("textStatus: " + JSON.stringify(XMLHttpRequest));
+                        var temp_val = XMLHttpRequest.responseJSON.message;
+                        // Swal.fire("Sorry!", "Please Try Again !", "warning")
+                        // Swal.fire("Sorry!", `${ XMLHttpRequest.responseJSON.message}`, "warning");
+                        Swal.fire({
+                            title: 'Sorry!',
+                            text: `${XMLHttpRequest.responseJSON.message}`,
+                            icon: 'warning',
+                            showCloseButton: false,
+                            showCancelButton: true,
+                            showConfirmButton: false,
+                            focusConfirm: false,
+                            allowOutsideClick: false,
+                            allowEscapeKey: false,
+                            cancelButtonText: 'Try Again!'
+                        }).then(function (res) {
+                            if (res.isDismissed) {
+                                location.reload();
+                            }
+                        });
+
+                    }
+                });
+
+            }
+
+        })
+    </script>
+
+
+</body>
+
+</html>

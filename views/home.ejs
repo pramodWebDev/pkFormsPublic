@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8" />
+    <title> Home | pkForms </title>
+
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="/userui/assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/jeevan.css" type="text/css" />
+
+    <link rel="stylesheet" href="../dist/output.css">
+    <script src="https://use.fontawesome.com/b37de17474.js"></script>
+
+
+  <style>
+    .formResponseContainer{
+        padding: 10px;
+    }
+
+    @media only screen and (min-width: 600px) {
+        .formResponseContainer{
+        padding-left:350px;
+        padding-right:350px;
+    }
+}
+</style>
+        <!-- endbuild -->
+
+</head>
+
+<body >
+    <div class="layout-column flex">
+        <%- include("partials/header.ejs") %>
+
+        
+
+        <div class="container">
+            <h1 class="text-8xl text-blue" > Home </h1> <button type="button" class="btn "> <a href="/create-form" target="_blank" > create-form </a> </button>
+<table class="table" id="table-parent">
+    <tr>
+        <td>S.No</td>
+        <td>
+           Form Title
+        </td>
+        <td>
+            Preview Form
+        </td>
+        <td>
+            View Response
+        </td>
+    </tr>
+
+ 
+</table>
+        </div>
+
+    </div>
+
+    
+ 
+
+
+<script src="/userui/libs/jquery/dist/jquery.min.js"></script>
+
+<script src="/userui/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="/userui/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- ajax page -->
+    <script src="/userui/libs/pjax/pjax.min.js"></script>
+    <script src="/userui/assets/js/ajax.js"></script>
+    <!-- lazyload plugin -->
+    <script src="/userui/assets/js/lazyload.config.js"></script>
+    <script src="/userui/assets/js/lazyload.js"></script>
+    <script src="/userui/assets/js/plugin.js"></script>
+    <!-- scrollreveal -->
+    <script src="/userui/libs/scrollreveal/dist/scrollreveal.min.js"></script>
+    <!-- feathericon -->
+    <script src="/userui/libs/feather-icons/dist/feather.min.js"></script>
+    <script src="/userui/assets/js/plugins/feathericon.js"></script>
+    <!-- theme -->
+    <script src="/userui/assets/js/theme.js"></script>
+    <script src="/userui/assets/js/utils.js"></script>
+
+<script>
+
+
+var user_id = <%-JSON.stringify(user_id)%>;
+var forms = <%-JSON.stringify(forms)%>;
+
+
+if ( forms != null) {
+
+    start();
+   
+} 
+
+async function start(){
+    var html_array = [];
+    for (let i = 0; i < forms.length; i++) {
+        const element = forms[i];
+        let respose_count = await getFormResponse(element._id);
+        respose_count = respose_count.result
+        console.log(respose_count, "respose_countrespose_count")
+        let temp_html = `<tr><td>${i+1}</td>
+            <td>${element.form_custom_head}</td>
+                            <td> <a href="/viewform/${user_id}/${element._id}" target="_blank" > view form </a> </td>
+                            <td> <button type="button" class="btn ">
+                                <a href="/response/${element._id}" target="_blank" > Response </a> <span class="badge badge-danger">${respose_count}</span>
+                                    </button>  </td></tr>`
+        html_array.push(temp_html);
+    }
+    $('#table-parent').append(html_array.join(''));
+}
+
+function getFormResponse(form_id) {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    type: "GET",
+                    url: `/get-forms-count/${form_id}`,
+                    success: function (result) {
+                        console.log(result, "<<result");
+                        resolve(result);
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        reject();
+                        console.log("textStatus: " + textStatus);
+                        console.log("errorThrown: " + errorThrown);
+                    }
+                });
+            })
+        }
+
+console.log(forms, "forms")
+console.log(user_id, "user_id")
+</script>
+</body>
+
+</html>

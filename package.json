@@ -1,0 +1,53 @@
+{
+  "name": "pkforms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:server": "nodemon server.",
+    "dev:buildcss": "npx tailwindcss -i ./src/input.css -o ./userui/assets/css/output.css --watch",
+    "dev": "npm run dev:server && npm run dev:buildcss"
+  },
+  "author": "pramod sahu",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.656.0",
+    "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
+    "body-parser": "^1.19.0",
+    "client-sessions": "^0.8.0",
+    "cookie-parser": "^1.4.5",
+    "cookie-session": "^2.0.0",
+    "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "csurf": "^1.11.0",
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.2",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.7-alpha.3",
+    "express-rate-limit": "^5.5.1",
+    "googleapis": "^89.0.0",
+    "helmet": "^3.22.0",
+    "i": "^0.3.6",
+    "kutty": "^0.6.0",
+    "method-override": "^3.0.0",
+    "moment": "^2.24.0",
+    "moment-timezone": "^0.5.28",
+    "mongoose": "^5.9.7",
+    "node-fetch": "^2.6.0",
+    "nodemon": "^2.0.14",
+    "npm": "^6.14.4",
+    "passport": "^0.5.2",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
+    "query-string": "^7.0.1",
+    "randomstring": "^1.1.5",
+    "request": "^2.88.2",
+    "uuid": "^7.0.3"
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.0.18"
+  }
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title> Responses | pkForms </title>
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="/userui/assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/jeevan.css" type="text/css" />
+    <script src="https://use.fontawesome.com/b37de17474.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .formResponseContainer {
+            padding: 10px;
+        }
+
+        @media only screen and (min-width: 600px) {
+            .formResponseContainer {
+                padding-left: 350px;
+                padding-right: 350px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="" class="layout-column flex">
+        <%- include("partials/header.ejs") %>
+
+    <div class="formResponseContainer">
+
+        <div class="panel panel-info">
+
+
+            <div class="panel-heading form-heading">Panel Header</div>
+
+
+        </div>
+        <div class="panel-default-cntnr">
+
+        </div>
+     
+    </div>
+
+</div>
+
+    <!-- endbuild -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script>
+
+        
+var user_id = <%-JSON.stringify(user_id)%>;
+var form_id = <%-JSON.stringify(form_id)%>;
+
+
+
+
+        getData();
+        async function getData() {
+            await getForms();
+            await getFormResponse();
+        }
+
+
+        function getForms() {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    type: "GET",
+                    url: `/get-forms/${form_id}`,
+                    success: function (result) {
+                        console.log(result, "<<formdsss");
+
+                        let responseArr = result.form_custom_questions;
+                        $(".form-heading").text(result.form_custom_head)
+
+                        var formQuetnBlock = [];
+                        console.log(responseArr, "responseArrresponseArr")
+                        for (let i = 0; i < responseArr.length; i++) {
+                            const element = responseArr[i];
+                            let htmlData = `<div class="panel panel-primary"><div class="panel-heading" id="${element.id}">${element.qName}</div></div>`
+                            formQuetnBlock.push(htmlData);
+
+                        }
+
+                        let questionBlock = formQuetnBlock.join('');
+                        document.querySelector(".panel-default-cntnr").innerHTML = questionBlock;
+                        resolve("opkk")
+
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("textStatus: " + textStatus);
+                        console.log("errorThrown: " + errorThrown);
+                    }
+                });
+            })
+
+        }
+
+        function getFormResponse() {
+            return new Promise(function (resolve, reject) {
+                $.ajax({
+                    type: "GET",
+                    url: `/get-response/${form_id}`,
+                    success: function (result) {
+                        console.log(result, "<<result");
+
+                        for (let index = 0; index < result.length; index++) {
+                            const parentElement = result[index];
+
+
+                            var responseArr = parentElement.custom_responses;
+
+                            for (let i = 0; i < responseArr.length; i++) {
+                                const element = responseArr[i];
+                                $("#" + element.id).after(`<div class="panel-body">${element.qAnswer}</div>`)
+
+                            }
+
+                        }
+
+
+
+
+                    },
+                    error: function (XMLHttpRequest, textStatus, errorThrown) {
+                        console.log("textStatus: " + textStatus);
+                        console.log("errorThrown: " + errorThrown);
+                    }
+                });
+            })
+        }
+
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>

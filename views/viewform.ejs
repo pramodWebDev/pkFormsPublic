@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title> View Forms | pkForms </title>
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <!-- style -->
+    <!-- build:css ../userui/assets/css/site.min.css -->
+    <link rel="stylesheet" href="/userui/assets/css/bootstrap.css" type="text/css" />
+
+    <script src="https://use.fontawesome.com/b37de17474.js"></script>
+    <!-- endbuild -->
+
+    <style>
+        .formContainer{
+            padding: 10px;
+        }
+
+        @media only screen and (min-width: 600px) {
+            .formContainer{
+            padding-left:350px;
+            padding-right:350px;
+        }
+}
+    </style>
+
+</head>
+
+<body>
+
+                <div class="formContainer  form-group">
+                        <h2>
+                            Form heading
+                        </h2>
+                            <h2>Test project</h2>
+                </div>
+
+    <script src="/userui/libs/jquery/dist/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="/userui/libs/popper.js/dist/umd/popper.min.js"></script>
+    <script src="/userui/libs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- ajax page -->
+    <script src="/userui/libs/pjax/pjax.min.js"></script>
+    <script src="/userui/assets/js/ajax.js"></script>
+    <!-- lazyload plugin -->
+    <script src="/userui/assets/js/lazyload.config.js"></script>
+    <script src="/userui/assets/js/lazyload.js"></script>
+    <script src="/userui/assets/js/plugin.js"></script>
+    <!-- scrollreveal -->
+    <script src="/userui/libs/scrollreveal/dist/scrollreveal.min.js"></script>
+    <!-- feathericon -->
+    <script src="/userui/libs/feather-icons/dist/feather.min.js"></script>
+    <script src="/userui/assets/js/plugins/feathericon.js"></script>
+    <!-- theme -->
+    <script src="/userui/assets/js/theme.js"></script>
+    <script src="/userui/assets/js/utils.js"></script>
+    <!-- endbuild -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+
+    <script>
+
+    var formResponse = <%-JSON.stringify(formResponse)%>;
+
+
+    console.log(formResponse , "<<formResponseformResponse");
+
+    var customformData = formResponse.form_custom_questions;
+
+    console.log(customformData.length , "custom formdata")
+
+           //pk code custom begins.
+           renderCustomForm();
+           function renderCustomForm() {
+
+            console.log("in render custom formsss");
+            var formBlock = [];
+            formBlock.push(`<form ><h2>${formResponse.form_custom_head}</h2>`)
+            for (let i = 0; i < customformData.length; i++) {
+                const element = customformData[i];
+
+                if (element.qType == 'Short Answer' ) {
+                
+                        formBlock.push(`<div class="form-group"><label class="form-label" >${element.qName}</label><input type="text" name="${element.qName}" class="form-control textNumValues" data-id="${element.id}" data-reqr=${element.qRequired}></div>`)
+                
+                } else if( element.qType == 'Long Answer' ){
+                    formBlock.push(`<div class="form-group"><label class="form-label" >${element.qName}</label><textarea name="${element.qName}" class="form-control textNumValues" data-id="${element.id}" data-reqr=${element.qRequired} rows="3"></textarea></div>`)
+
+                    // <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                    // <input type="date" id="start" name="trip-start" value="2018-07-22" min="2018-01-01" max="2018-12-31">
+
+                }else if( element.qType == 'File upload'  ){
+                    formBlock.push(`<div class="form-group"><label class="form-label" >${element.qName}</label><input type="file" name="${element.qName}" class="form-control-file fileValues" id="${element.id}" data-id="${element.id}" data-reqr=${element.qRequired}></div>`)
+
+                } if( element.qType == 'Number' ){
+
+                    formBlock.push(`<div class="form-group"><label class="form-label" >${element.qName}</label><input type="number" name="${element.qName}" class="form-control textNumValues" data-id="${element.id}" data-reqr=${element.qRequired}></div>`)
+
+                }else if( element.qType == 'Date' ){
+                    formBlock.push(`<div class="form-group"><label class="form-label" >${element.qName}</label><input type="date" name="${element.qName}" class="form-control dateValues" data-id="${element.id}" data-reqr=${element.qRequired} value="2018-07-22" min="1950-01-01" max="2100-12-31"></div>`)
+
+                } if( element.qType == 'Dropdown' ) { //Dropdown
+
+                    formBlock.push(`<div class="form-group"><label for="${element.qName}" class="select-label form-label"> ${element.qName} </label> <select class="form-control" data-id="${element.id}" name="${element.qName}" data-reqr="${element.qRequired}">`)
+                    for (let j = 0; j < element.options.length; j++) {
+                        formBlock.push(` <option value="${element.options[j]}">${element.options[j]}</option> `);
+                    }
+                    formBlock.push(`</select></div> `);
+                }else if( element.qType == 'CheckBox' ){
+
+                    formBlock.push(`<label class="form-label" >${element.qName}</label>`);
+
+                    for (let n = 0; n < element.options.length; n++) {
+                        formBlock.push(`<div class="form-group checkBoxValues form-check"><input id="checkBoxId${n}"  type="checkbox" name="${element.options[n]}" class="form-check-input" data-id="${element.id}" data-reqr=${element.qRequired}> <label class="form-check-label" for="checkBoxId${n}"> ${element.options[n]} </label></div>`)
+                    }
+                }
+            }
+
+            formBlock.push(`<div class="text-center"><button type="button" class="btn btn-primary" name="button" onclick=" getCustomFormValues()">Submit Details</button></div></form>`)
+            formView = formBlock.join('');
+
+            document.querySelector(".formContainer").innerHTML = formView;
+
+}
+
+
+
+
+
+  async  function getCustomFormValues() {
+
+
+    var makeAjaxCall = true;
+    var queryPara = "test"
+    var inputTexts = $('.formContainer').find('.textNumValues');
+    var inputDates = $('.formContainer').find('.dateValues');
+    var inputFiles = $('.formContainer').find('.fileValues');
+    var inputCheckBoxValues = $('.formContainer').find('.form-check-input');
+    var inputDropdown = $('.formContainer').find('select')
+
+    formDataObj = {
+        formData: []
+    }
+
+           var pathname = window.location.pathname.split("/");
+            var user_id = pathname[2];
+            var form_id = pathname[3];
+
+            formDataObj.user_id = user_id
+            formDataObj.form_id = form_id
+
+
+            console.log(user_id, form_id, "form_id form_id")
+
+
+
+    for (let i = 0; i < inputTexts.length; i++) {
+        const element = inputTexts[i];
+        if (element.getAttribute('data-reqr') == "true" && element.value == '') {
+            alert(element.getAttribute('name') + " field Required!");
+            makeAjaxCall = false;
+            break;
+        }
+        k = {};
+        k.id = element.getAttribute('data-id');
+        // k.leadType = element.getAttribute('data-leadtype');
+        k.qName = element.getAttribute('name');
+        k.qAnswer = element.value;
+        formDataObj.formData.push(k)
+
+    }
+
+    
+    for (let i = 0; i < inputDropdown.length; i++) {
+        const element = inputDropdown[i];
+        k = {};
+
+        k.id = element.getAttribute('data-id');
+        k.qName = element.getAttribute('name');
+        k.qAnswer = element.value;
+        formDataObj.formData.push(k)
+
+    }
+    for (let i = 0; i < inputDates.length; i++) {
+        const element = inputDates[i];
+        k = {};
+
+        k.id = element.getAttribute('data-id');
+        k.qName = element.getAttribute('name');
+        k.qAnswer = element.value;
+        formDataObj.formData.push(k);
+
+    }
+
+
+    for (let i = 0; i < inputCheckBoxValues.length; i++) {
+        const element = inputCheckBoxValues[i];
+
+       let chkBoxId = element.getAttribute('id');
+        k = {};
+
+        console.log(element, "Elementtt")
+        console.log(chkBoxId, "chkBoxId")
+        if ($('#'+chkBoxId).is(":checked"))
+        {
+        k.id = element.getAttribute('data-id');
+        k.qName = element.getAttribute('name');
+        k.qFieldType = "checkbox";
+        k.qAnswer = "true"
+        formDataObj.formData.push(k)
+        }
+               
+
+    }
+
+
+
+    console.log(formDataObj, '<<< Custom Form Obj');
+    console.log(inputFiles, '<<< inputFiles');
+
+    // if(inputFiles.length > 0){
+    //     let kVal = await convertBase64(inputFiles);
+    // formDataObj.formData.push(kVal);
+    // }
+
+  
+
+    await sendData(makeAjaxCall, formDataObj);
+
+    }
+
+    function sendData(makeAjaxCall, formDataObj) {
+
+        console.log(formDataObj, "formDataObjformDataObj");
+
+return new Promise(function(resolve, reject) {
+    $.ajax({
+                type: "POST",
+                url: "/create-custom-response",
+                data: formDataObj,
+                success: function(msg) {
+                    console.log(msg, "msgmsg");
+                    Swal.fire("Success!", "Your Response Submitted", "success");
+                    window.location.reload();
+
+                    // resetVATResponse();
+                    // document.getElementById('vatResponse').style.display = "block";
+                    // document.getElementById('thankYouScreen').style.display = "block";
+                },
+                error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    console.log("textStatus: " + textStatus);
+                    console.log("errorThrown: " + errorThrown);
+                }
+            });
+
+            resolve("opkk")
+})
+}
+
+
+     function convertBase64(inputFiles) {
+
+        return new Promise(function(resolve, reject) {
+            for (let i = 0; i < inputFiles.length; i++) {
+            const element = inputFiles[i];
+            k = {};
+
+            k.id = element.getAttribute('data-id');
+            let inputFileId = element.getAttribute('id');
+            k.qName = element.getAttribute('name');
+
+            let baseSixtyFourData;
+
+            var fileInput = $(`#${inputFileId}`)
+
+
+            var reader = new FileReader();
+            reader.readAsDataURL(fileInput[0].files[0]); 
+
+            reader.onload = function () {
+                baseSixtyFourData = reader.result
+                k.qAnswer = baseSixtyFourData;
+            resolve(k)
+                console.log(reader.result , "base 64 data");//base64encoded string
+            };
+            reader.onerror = function (error) {
+                console.log('Error: ', error);
+            };
+
+        
+            // formDataObj.formData.push(k);
+
+    }
+          
+
+        })
+}
+
+    //----
+    </script>
+
+    
+  
+</body>
+
+</html>

@@ -1,0 +1,77 @@
+<!-- Image and text -->
+<nav class="navbar navbar-light bg-light">
+	<a class="navbar-brand" href="/home">
+	  <img src="/userui/assets/img/vp_logo.png" width="30" height="30" class="d-inline-block align-top" alt="">
+	  pkForms
+	</a>
+
+	<ul class="nav navbar-menu order-1 order-lg-2">
+
+		<!-- User dropdown menu -->
+		<li class="nav-item dropdown">
+			<a href="#" data-toggle="dropdown" class="nav-link d-flex align-items-center px-2 text-color">
+				<span class="avatar w-24" style="margin: -2px;">
+					<img id="logoProfile" src="" alt="...">
+				</span>
+				<span class="pl-2" id="profile_name"> Profile name</span>
+			</a>
+			<div class="dropdown-menu dropdown-menu-right w mt-3 animate fadeIn">
+
+
+				<a class="dropdown-item" href="/profile">
+					<span>Profile</span>
+				</a>
+
+				<div class="dropdown-divider"></div>
+
+				<a class="dropdown-item" href="/logout">Sign out</a>
+			</div>
+		</li>
+		<!-- Navarbar toggle btn -->
+		<li class="nav-item d-lg-none">
+			<a href="#" class="nav-link px-2" data-toggle="collapse" data-toggle-class data-target="#navbarToggler">
+				<i data-feather="search"></i>
+			</a>
+		</li>
+		<li class="nav-item d-lg-none">
+			<a class="nav-link px-1" data-toggle="modal" data-target="#aside">
+				<i data-feather="menu"></i>
+			</a>
+		</li>
+	</ul>
+  </nav>
+
+<script src="/userui/libs/jquery/dist/jquery.min.js"></script>
+
+<script type="text/javascript">
+	//Get User info and bind it
+	// $( document ).ready(function() {
+
+
+		
+
+
+	console.log("hey reached header");
+	$.ajax({
+		type: 'GET',
+		url: '/me',
+		success: function(response) {
+
+			$("#profile_name").text(response.name);
+			if (response.profile_pic) {
+
+				console.log(response.profile_pic, "response.profile_pic")
+				$("#logoProfile").attr("src", response.profile_pic);
+			}
+			if (!response.profile_pic) {
+				$("#logoProfile").attr("src", "/userui/assets/img/user.png");
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown) {
+			alert("error loading profile info in header")
+
+
+		}
+	});
+	// });
+</script>

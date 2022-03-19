@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title> Responses | pkForms </title>
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+    <meta name="description" content="Responsive, Bootstrap, BS4" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+    <link rel="stylesheet" href="/userui/assets/css/bootstrap.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/style.css" type="text/css" />
+    <link rel="stylesheet" href="/userui/assets/css/jeevan.css" type="text/css" />
+    <script src="https://use.fontawesome.com/b37de17474.js"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <style>
+        .formResponseContainer {
+            padding: 10px;
+        }
+
+        @media only screen and (min-width: 600px) {
+            .formResponseContainer {
+                padding-left: 350px;
+                padding-right: 350px;
+            }
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div id="" class="layout-column flex">
+        <%- include("partials/header.ejs") %>
+
+    <div class="container">
+
+        <div class="pl-5 pr-5 pb-2">
+            <form role="form">
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Profile</label>
+                    <div class="col-sm-10">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control"  placeholder="Enter your name" id="userName"></div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label">Email</label>
+                    <div class="col-sm-10">
+                        <input type="email" class="form-control"  placeholder="Enter your email" id="userMail" readonly></div>
+                </div>
+ 
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Mobile </label>
+                    <div class="col-sm-10">
+                        <input type="number" class="form-control"  placeholder="Enter your mobile" id="userMobile"></div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Company </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control"  placeholder="Enter your company name" id="userCompany"></div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Website </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control"  placeholder="Enter your website" id="companyWebsite"></div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Role </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Enter your role" id="userRole"></div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-sm-2 col-form-label"> Company size </label>
+                    <div class="col-sm-10">
+                        <input type="text" class="form-control" placeholder="Enter your company size" id="userCompanySize"></div>
+                </div>
+
+                <div class="form-group text-center">
+                    <!-- <button type="button" class="btn btn-secondary mt-2 btn-vidpipe-width update-pwd-btn "><i class="fa fa-pencil"></i>&nbsp;&nbsp; Change Password </button> -->
+
+                    <button type="button" class="btn btn-primary mt-2 ml-2 btn-vidpipe-width" id="profileSave"><i class="fa fa-wrench"></i>&nbsp;&nbsp;Update</button>
+
+                </div>
+            </form>
+        </div>
+
+   
+    </div>
+
+</div>
+
+    <!-- endbuild -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+    <script>
+
+        
+var userInfo = <%-JSON.stringify(userInfo)%>;
+
+console.log(userInfo, "userInfo")
+
+$('#profileSave').click(function() {
+
+var name = $('#userName').val();
+var mail = $('#userMail').val();
+var company = $('#userCompany').val();
+var website = $('#companyWebsite').val();
+var mobile = $('#userMobile').val();
+var role = $('#userRole').val();
+var company_size = $('#userCompanySize').val();
+// var email =  $('#userMail').val();
+
+
+dataObj = {
+    "name": name,
+    "mail": mail,
+    "company": company,
+    "website": website,
+    "mobile": mobile,
+    "role": role,
+    "company_size": company_size,
+
+};
+if (document.getElementById("customFile").files.length != 0) {
+    dataObj["profile_pic"] = base64data;
+}
+
+console.log(dataObj, "objjjjj");
+
+$.ajax({
+    type: "PUT",
+    url: "/updateUser",
+    data: dataObj,
+    success: function(msg) {
+
+        Swal.fire("Success!", "Profile info updated", "success");
+        location.reload();
+    },
+    error: function(XMLHttpRequest, textStatus, errorThrown) {
+        console.log("textStatus: " + textStatus);
+        console.log("errorThrown: " + errorThrown);
+    }
+});
+
+
+
+})
+
+
+
+$("#customFile").change(function() {
+
+var file, img;
+
+if ((file = this.files[0])) {
+
+    var blob = file;
+    var reader = new FileReader();
+    imageType = blob.type;
+
+    console.log(blob, "Reader & Blob");
+    console.log(imageType, "imageType");
+
+    reader.readAsDataURL(blob);
+    reader.onloadend = function() {
+        base64data = reader.result;
+        console.log(base64data, "base64data");
+
+    }
+}
+})
+
+
+
+
+
+    </script>
+
+
+</body>
+
+</html>
